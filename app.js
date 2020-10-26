@@ -6,13 +6,26 @@ Vue.component('Square', {
     // },
     props: ['item'],
 
+    data() {
+        return {
+            
+        }
+    },
+
     computed: {
         style() {
-            return `background-color:${this.item.Color}`
+            return `
+            background-color:${this.item.Color};`
         },
 
         Id() {
-            return this.item.Id;
+            return "Square" + this.item.Id;
+        },
+
+        class(){
+            let clicked = this.item.clicked;
+            let Victory = this.item.Victory
+            return {hidden: (clicked && !Victory)}
         }
 
     },
@@ -24,7 +37,7 @@ Vue.component('Square', {
     },
 
     template: `
-        <div :id="Square" + this.Id class="Square" :style="style" @click="SquareClick(Id)"></div>
+        <div :id="this.Id" class="Square" :class="this.class" :style="style" @click="SquareClick(item.Id)"></div>
         `
 });
 
@@ -35,7 +48,13 @@ var app = new Vue({
         Victory: false,
         IdWinner: 0,
         ColorWinner: '',
-        EasyMode: false
+        EasyMode: false,
+        SquaresData:[],
+        message:''
+    },
+
+    mounted() {
+        this.initSquares();
     },
 
     computed: {
@@ -48,41 +67,85 @@ var app = new Vue({
             }
         },
 
-        SquareData() {
-            let data = []
-            if (!this.Victory) {
-                this.IdWinner = Math.floor(Math.random() * 3);
-                for (let i = 0; i < (this.EasyMode ? 3 : 6); i++) {
-                    if (i === this.IdWinner) {
-                        this.ColorWinner = this.createRandomStringColor();
-                        data.push({
-                            Id: i,
-                            Color: this.ColorWinner
-                        });
-                    } else {
-                        data.push({
-                            Id: i,
-                            Color: this.createRandomStringColor()
-                        })
-                    }
-                }
-            } else {
-                for (let i = 0; i < (this.EasyMode ? 3 : 6); i++) {
-                    data.push({
-                        Id: i,
-                        Color: this.ColorWinner
-                    })
-                }
-            }
-            return data;
-        }
+        getSquareData() {
+            return this.SquaresData;
+        },
+
+        // SquareData() {
+        //     this.SquaresData = []
+        //     if (!this.Victory) {
+        //         this.IdWinner = Math.floor(Math.random() * 3);
+        //         for (let i = 0; i < (this.EasyMode ? 3 : 6); i++) {
+        //             if (i === this.IdWinner) {
+        //                 this.ColorWinner = this.createRandomStringColor();
+        //                 this.SquaresData.push({
+        //                     Id: i,
+        //                     Color: this.ColorWinner,
+        //                     Victory:false,
+        //                     clicked:false
+        //                 });
+        //             } else {
+        //                 this.SquaresData.push({
+        //                     Id: i,
+        //                     Color: this.createRandomStringColor(),
+        //                     Victory:false,
+        //                     clicked:false
+        //                 })
+        //             }
+        //         }
+        //     } else {
+        //         for (let i = 0; i < (this.EasyMode ? 3 : 6); i++) {
+        //             this.SquaresData.push({
+        //                 Id: i,
+        //                 Color: this.ColorWinner,
+        //                 Victory:true,
+        //                 clicked:false
+        //             })
+        //         }
+        //     }
+        //     return this.SquaresData;
+        // }
     },
 
     methods: {
+        initSquares(){
+            this.message = '';
+            this.SquaresData = []
+            this.IdWinner = Math.floor(Math.random() * (this.EasyMode ? 3 : 6));
+                for (let i = 0; i < (this.EasyMode ? 3 : 6); i++) {
+                    if (i === this.IdWinner) {
+                        this.ColorWinner = this.createRandomStringColor();
+                        this.SquaresData.push({
+                            Id: i,
+                            Color: this.ColorWinner,
+                            Victory:false,
+                            clicked:false
+                        });
+                    } else {
+                        this.SquaresData.push({
+                            Id: i,
+                            Color: this.createRandomStringColor(),
+                            Victory:false,
+                            clicked:false
+                        })
+                    }
+                }
+        },
+
         SquareClick(IdSquare) {
-            if (IdSquare === this.IdWinner) {
-                this.Victory = true;
-                alert('Ganaste Puto');
+            if (!this.Victory) {
+                if (IdSquare === this.IdWinner) {
+                    this.Victory = true;
+                    this.message = 'You won!'
+                    for (const Square of this.SquaresData) {
+                        Square.Victory = true;
+                        Square.clicked = false;
+                        Square.Color=this.ColorWinner;
+                    }
+                } else{
+                    this.message = 'Try Again!'
+                    this.SquaresData[IdSquare].clicked = true;
+                }
             }
         },
 
@@ -98,6 +161,15 @@ var app = new Vue({
 
         Restart() {
             this.Victory = false;
+            this.initSquares();
+        },
+
+        Easy() {
+            this.EasyMode = true;
+        },
+
+        Difficult() {
+            this.EasyMode = false;
         }
     }
 })

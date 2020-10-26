@@ -1,7 +1,18 @@
 .Square{
-    width: 10rem;
+    width: 30%;
+	background: blue;
+	padding-bottom: 30%;
+	float: left;
+	margin: 1.66%;
+	border-radius: 10%;
+	transition: background 0.8s;
+	-webkit-transition: background 0.8s;
+	-moz-transition: background 0.8s;
+}
+.hidden{
+	width: 10rem;
 	height: 10rem;
-	display: inline-block;
+	visibility: hidden;
 }
 body {
 	background: #232323;
@@ -55,7 +66,7 @@ h1 {
 	max-width: 600px;
 }
 #message {
-	color: #ffffff;
+	color: #000040;
 	display: inline-block;
 	width: 20%;
 }

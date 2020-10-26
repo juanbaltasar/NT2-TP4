@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title></title>
+    <title>Juego Colores VUE</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
@@ -20,12 +20,12 @@
 
         <div id="navigator">
             <button id="reset" @click="Restart"> {{TextoRestart}} </button>
-            <span id="message"> </span>
+            <span id="message">{{ message }}</span>
 
-            <button id="easy">easy</button>
-            <button id="hard" class="selected">hard</button>
+            <button id="easy" :class="{ selected:EasyMode }" @click="Easy()">easy</button>
+            <button id="hard" :class="{ selected:!EasyMode }" @click="Difficult()">hard</button>
         </div>
-        <Square v-for="item in SquareData" :key="item.Id" :item="item"/>
+        <Square v-for="item in getSquareData" :key="item.Id" :item="item"/>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
